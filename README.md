@@ -3,3 +3,16 @@
 </div>
 
 # Case 2 in course 02582 Computational Data Analysis Spring 2022
+
+31/3:
+- Upload data
+- Setup GitHub Repo
+- Setup Messenger
+- 
+7/4:
+
+21/4:
+
+28/4
+
+Handin: 4/5
