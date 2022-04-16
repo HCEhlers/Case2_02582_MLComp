@@ -77,7 +77,7 @@ print(np.shape(image_all_pieces))
 
 print("Starting ICA")
 
-# Fit ICA with centered data
+# Fit ICA
 n_components = 1
 model = decomposition.FastICA(n_components=n_components,algorithm='parallel')
 ICAimgs = model.fit_transform(np.reshape(image_all_pieces, (23705,68*30*30*3)))
