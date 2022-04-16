@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import pandas as pd
@@ -16,6 +16,7 @@ import glob
 import os
 from sklearn import decomposition
 import py_pcha
+from joblib import dump, load
 
 
 # In[2]:
@@ -192,10 +193,11 @@ L = 0.5*np.linalg.norm(X-X_hat)**2
 components = model.components_
 
 
-# In[32]:
+# In[3]:
 
 
 np.savetxt("SC_output.csv", components, delimiter=",")
+dump(model, 'sc.joblib')
 
 
 # In[34]:
