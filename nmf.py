@@ -75,7 +75,7 @@ def load_image_data(use_landmarks, on_hpc):
         landmarks_only = landmarks[[str(i) for i in range(1,137)]].to_numpy()
 
         imgTrain = landmarks_all(imgTrain, landmarks_only[train], None if on_hpc else 'mem_train.dat')
-        imgTest = landmarks_all(imgTest, landmarks_only[train], None if on_hpc else 'mem_test.dat')
+        imgTest = landmarks_all(imgTest, landmarks_only[test], None if on_hpc else 'mem_test.dat')
 
         imgTrain = np.reshape(imgTrain, (len(train), -1))
         imgTest = np.reshape(imgTest, (len(test), -1))
