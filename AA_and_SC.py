@@ -3,7 +3,7 @@
 
 # In[2]:
 
-
+import sys
 import pandas as pd
 import numpy as np
 import scipy
@@ -22,6 +22,7 @@ from joblib import dump, load
 # In[2]:
 
 
+jid = sys.argv[1]
 ############
 ###Labels###
 #age: from 1 to 116
@@ -29,12 +30,12 @@ from joblib import dump, load
 #race: 0-white; 1-black; 2-Asian; 3-Indian; 4-others(like Hispanic, Latino, Middle Eastern)
 ############
 
-labels = pd.read_csv('./data/labels.csv', header = None)
+labels = pd.read_csv('/work3/s200770/data/labels.csv', header = None)
 labels = labels.values
 print(labels.shape)
 print(labels)
 
-landmarks = pd.read_csv('labels_and_landmarks.csv')
+landmarks = pd.read_csv('/work3/s200770/data/labels_and_landmarks.csv')
 landmarks_only = landmarks[[str(i) for i in range(1,137)]]
 print(landmarks)
 
@@ -53,8 +54,8 @@ print("labels of races: {}".format(np.unique(labels[:, -1])))
 # read images from Faces folder
 images = list()
 
-filelist = glob.glob('./data/Faces/*.jpg')
-for file in sorted(filelist, key=lambda s: int(s.strip(string.ascii_letters + "\\./"))):
+filelist = glob.glob('/work3/s200770/data/Faces/*.jpg')
+for file in sorted(filelist, key=lambda s: int(s[20:].strip(string.ascii_letters + "./"))):
     im = iio.imread(file)
     images.append(im)
 images = np.array(images)
@@ -87,13 +88,14 @@ def get_landmarks(X, imgNum, landmarks):
 #    return np.array(get_landmarks(X, imgNum, landmarks)).flatten()
 
 def landmarks_all(X, landmarks):
-    data = np.memmap("landmark_memory.dat", dtype='float64', mode="w+", shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
+    #data = np.memmap("landmark_memory.dat", dtype='float64', mode="w+", shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
+    data = np.empty(dtype='float64', shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
     for i in range(len(X)):
         lm = get_landmarks(X, i, landmarks[i,:])
         if lm is not None:
             np.copyto(data[i], lm)
-        if i%100 == 0:
-            data.flush()
+        #if i%100 == 0:
+        #    data.flush()
     return data
 
 
@@ -102,17 +104,6 @@ def landmarks_all(X, landmarks):
 
 def landmarks_all_reuse(X, landmarks):
     return np.memmap("landmark_memory.dat", dtype='float64', mode="r", shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
-
-
-# In[7]:
-
-
-imgs = []
-for piece in get_landmarks(images, 50, [40,60,80,100,170,20]):
-    print(np.shape(piece))
-    imgs.append(Image.fromarray(piece))
-
-display(*imgs)
 
 
 # In[8]:
@@ -171,9 +162,9 @@ L = 0.5*np.linalg.norm(X.T-X_hat)**2
 # In[28]:
 
 
-np.savetxt("AA_output_XC.csv", XC, delimiter=",")
-np.savetxt("AA_output_S.csv", S, delimiter=",")
-np.savetxt("AA_output_C.csv", C, delimiter=",")
+np.savetxt("AA_output_XC"+jid+".csv", XC, delimiter=",")
+np.savetxt("AA_output_S"+jid+".csv", S, delimiter=",")
+np.savetxt("AA_output_C"+jid+".csv", C, delimiter=",")
 print('Sum of Squared Errors (SSE) for AA:', SSE)
 
 
@@ -196,8 +187,8 @@ components = model.components_
 # In[3]:
 
 
-np.savetxt("SC_output.csv", components, delimiter=",")
-dump(model, 'sc.joblib')
+np.savetxt("SC_output"+jid+".csv", components, delimiter=",")
+dump(model, "SC"+jid+".joblib")
 
 
 # In[34]:

@@ -1,3 +1,4 @@
+import sys
 import pandas as pd
 import numpy as np
 import scipy
@@ -11,12 +12,14 @@ import os
 from sklearn import decomposition
 from joblib import dump, load
 
-labels = pd.read_csv('./data/labels.csv', header = None)
+jid = sys.argv[1]
+
+labels = pd.read_csv('/work3/s200770/data/labels.csv', header = None)
 labels = labels.values
 print(labels.shape)
 print(labels)
 
-landmarks = pd.read_csv('labels_and_landmarks.csv')
+landmarks = pd.read_csv('/work3/s200770/data/labels_and_landmarks.csv')
 landmarks_only = landmarks[[str(i) for i in range(1,137)]]
 print(landmarks)
 
@@ -27,8 +30,8 @@ print("labels of races: {}".format(np.unique(labels[:, -1])))
 # read images from Faces folder
 images = list()
 
-filelist = glob.glob('./data/Faces/*.jpg')
-for file in sorted(filelist, key=lambda s: int(s.strip(string.ascii_letters + "./"))):
+filelist = glob.glob('/work3/s200770/data/Faces/*.jpg')
+for file in sorted(filelist, key=lambda s: int(s[20:].strip(string.ascii_letters + "./"))):
     im = iio.imread(file)
     images.append(im)
 images = np.array(images)
@@ -83,5 +86,5 @@ model = decomposition.FastICA(n_components=n_components,algorithm='parallel')
 ICAimgs = model.fit_transform(np.reshape(image_all_pieces, (23705,68*30*30*3)))
 
 # Write to file
-dump(model, 'ICA.joblib')
-np.savetxt('icatransform.csv', ICAimgs, delimiter=",")
+dump(model, 'ICA_' + jid + '.joblib')
+np.savetxt('ICA_' + jid + '.csv', ICAimgs, delimiter=",")
