@@ -1,5 +1,5 @@
 #!/bin/bash
-#BSUB -M 160G
+#BSUB -M 200G
 #BSUB -J NMF
 #BSUB -q hpc
 #BSUB -W 96:00
@@ -12,4 +12,4 @@ source venv_1/bin/activate
 
 # start the collect command with the above settings
 lscpu
-python3 -u nmf.py "$LSB_JOBID"
+python3 -u nmf.py "$LSB_JOBID" --hpc
