@@ -1,0 +1,19 @@
+Loaded dependency [python3/3.9.11]: gcc/10.3.0-binutils-2.36.1
+Loaded module: python3/3.9.11
+
+Loading python3/3.9.11
+  Loading requirement: gcc/10.3.0-binutils-2.36.1
+Traceback (most recent call last):
+  File "/zhome/7e/c/151330/case2/ICA.py", line 86, in <module>
+    ICAimgs = model.fit_transform(np.reshape(image_all_pieces, (23705,68*30*30*3)))
+  File "/zhome/7e/c/151330/case2/venv_1/lib/python3.9/site-packages/sklearn/decomposition/_fastica.py", line 615, in fit_transform
+    return self._fit(X, compute_sources=True)
+  File "/zhome/7e/c/151330/case2/venv_1/lib/python3.9/site-packages/sklearn/decomposition/_fastica.py", line 529, in _fit
+    u, d, _ = linalg.svd(XT, full_matrices=False, check_finite=False)
+  File "/zhome/7e/c/151330/case2/venv_1/lib/python3.9/site-packages/scipy/linalg/_decomp_svd.py", line 123, in svd
+    lwork = _compute_lwork(gesXd_lwork, a1.shape[0], a1.shape[1],
+  File "/zhome/7e/c/151330/case2/venv_1/lib/python3.9/site-packages/scipy/linalg/lapack.py", line 1023, in _compute_lwork
+    return _check_work_float(ret[0].real, dtype, int_dtype)
+  File "/zhome/7e/c/151330/case2/venv_1/lib/python3.9/site-packages/scipy/linalg/lapack.py", line 1043, in _check_work_float
+    raise ValueError("Too large work array required -- computation "
+ValueError: Too large work array required -- computation cannot be performed with standard 32-bit LAPACK.

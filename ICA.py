@@ -82,7 +82,7 @@ print("Starting ICA")
 
 # Fit ICA
 n_components = 1
-model = decomposition.FastICA(n_components=n_components,algorithm='parallel')
+model = decomposition.FastICA(n_components=n_components,algorithm='deflation')
 ICAimgs = model.fit_transform(np.reshape(image_all_pieces, (23705,68*30*30*3)))
 
 # Write to file

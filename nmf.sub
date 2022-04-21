@@ -1,5 +1,5 @@
 #!/bin/bash
-#BSUB -M 40G
+#BSUB -M 160G
 #BSUB -J NMF
 #BSUB -q hpc
 #BSUB -W 96:00
