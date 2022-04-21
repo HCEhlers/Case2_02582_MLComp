@@ -45,7 +45,7 @@ def landmarks_all(X, landmarks, memmap):
             data.flush()
     return data
 
-def load_image_data(use_landmarks, on_hpc):
+def load_image_data(use_landmarks, on_hpc, subset):
     labelsUrl = '/work3/s200770/data/labels.csv' if on_hpc else './data/labels.csv'
     labels = pd.read_csv(labelsUrl, header = None)
     labels = labels.values
@@ -60,6 +60,8 @@ def load_image_data(use_landmarks, on_hpc):
         filelist = glob.glob('data/Faces/*.jpg')
 
     nimg = len(filelist)
+    if subset:
+        nimg = 200
     train, test = train_test_split([i for i in range(nimg)], test_size=0.20, random_state=3872324)
 
     for file in sorted(filelist, key=lambda s: int(s.strip(string.ascii_letters + "./"))):
@@ -88,23 +90,42 @@ def load_image_data(use_landmarks, on_hpc):
 jid = 'LAPTOP'
 use_landmarks = False
 on_hpc = False
+subset = False
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         if arg == '--landmarks':
             use_landmarks = True
         elif arg == '--hpc':
             on_hpc = True
+        elif arg == '--subset':
+            subset = True
         else:
             jid = int(arg)
 
-Xtrain, ytrain, Xtest, ytest = load_image_data(use_landmarks, on_hpc)
+print("Loading images for job ", jid)
+
+Xtrain, ytrain, Xtest, ytest = load_image_data(use_landmarks, on_hpc, subset)
 
 print(np.shape(Xtrain), np.shape(ytrain), np.shape(Xtest), np.shape(ytest))
-#
-#print("Starting NMF")
-#
-#model = decomposition.NMF(n_components=128, init='random', random_state=0, tol=1e-4, max_iter=5000, verbose=2)
-#NMFimgs = model.fit_transform(np.reshape(image_all_pieces, (23705,68*30*30*3)))
-#
-#dump(model, 'NMF_' + jid + '.joblib')
-#np.savetxt('NMF_' + jid + '.csv', NMFimgs, delimiter=",")
+
+tol = 1e-4
+if subset:
+    tol = 1e-2
+
+print("Starting NMF with tolerance", tol)
+
+model = decomposition.NMF(n_components=128, init='random', random_state=3879324, tol=1e-2, max_iter=5000, verbose=2)
+model.fit(Xtrain)
+
+print("Done fitting")
+
+name = jid + '_RAW_'
+if use_landmarks:
+    name = jid + '_LANDMARK_'
+
+XtrainNMF = model.transform(Xtrain)
+np.savetxt('NMF_' + name + '_TRAIN.csv', XtrainNMF, delimiter=",")
+XtrainNMF = None
+
+XtestNMF = model.transform(Xtest)
+np.savetxt('NMF_' + name + '_TEST.csv', XtestNMF, delimiter=",")
