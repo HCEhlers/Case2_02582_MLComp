@@ -10,6 +10,7 @@ import string
 import glob
 import os
 from sklearn import decomposition
+from sklearn.model_selection import train_test_split
 from joblib import dump, load
 
 LANDMARK_SIZE = 15
@@ -32,20 +33,17 @@ def get_landmarks(X, imgNum, landmarks):
     return np.array(pieces)
 
 def landmarks_all(X, landmarks, memmap):
-    if memmap:
-        data = np.memmap("landmark_memory.dat", dtype='float64', mode="w+", shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
-    else:
+    if memmap is None:
         data = np.empty(dtype='float64', shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
+    else:
+        data = np.memmap(memmap, dtype='float64', mode="w+", shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
     for i in range(len(X)):
         lm = get_landmarks(X, i, landmarks[i,:])
         if lm is not None:
             np.copyto(data[i], lm)
-        #if i%100 == 0:
-        #    data.flush()
+        if memmap is not None and i%1000 == 0:
+            data.flush()
     return data
-
-def landmarks_all_reuse(X, landmarks):
-    return np.memmap("landmark_memory.dat", dtype='float64', mode="r", shape=(len(X),len(landmarks[0])//2,2*LANDMARK_SIZE,2*LANDMARK_SIZE,3))
 
 def load_image_data(use_landmarks, on_hpc):
     labelsUrl = '/work3/s200770/data/labels.csv' if on_hpc else './data/labels.csv'
@@ -60,21 +58,32 @@ def load_image_data(use_landmarks, on_hpc):
         filelist = [file[20:] for file in filelist]
     else:
         filelist = glob.glob('data/Faces/*.jpg')
+
+    nimg = len(filelist)
+    train, test = train_test_split([i for i in range(nimg)], test_size=0.20, random_state=3872324)
+
     for file in sorted(filelist, key=lambda s: int(s.strip(string.ascii_letters + "./"))):
         im = iio.imread(file)
         images.append(im)
-    nimg = len(images)
-    images = np.array(images)
+
+    imgTrain = np.array([images[i] for i in train])
+    imgTest = np.array([images[i] for i in test])
 
     if use_landmarks:
         landmarksUrl = '/work3/s200770/data/labels_and_landmarks.csv' if on_hpc else './labels_and_landmarks.csv'
         landmarks = pd.read_csv(landmarksUrl)
         landmarks_only = landmarks[[str(i) for i in range(1,137)]].to_numpy()
 
-        image_all_pieces = landmarks_all(images, landmarks_only, not on_hpc)
-        return np.reshape(image_all_pieces, (nimg, -1)), labels
+        imgTrain = landmarks_all(imgTrain, landmarks_only[train], None if on_hpc else 'mem_train.dat')
+        imgTest = landmarks_all(imgTest, landmarks_only[train], None if on_hpc else 'mem_test.dat')
+
+        imgTrain = np.reshape(imgTrain, (len(train), -1))
+        imgTest = np.reshape(imgTest, (len(test), -1))
+        return imgTrain, labels[train], imgTest, labels[test]
     else:
-        return np.reshape(images, (nimg, -1)), labels
+        imgTrain = np.reshape(imgTrain, (len(train), -1))
+        imgTest = np.reshape(imgTest, (len(test), -1))
+        return imgTrain, labels[train], imgTest, labels[test]
 
 jid = 'LAPTOP'
 use_landmarks = False
@@ -88,9 +97,9 @@ if len(sys.argv) > 1:
         else:
             jid = int(arg)
 
-data, labels = load_image_data(use_landmarks, on_hpc)
+Xtrain, ytrain, Xtest, ytest = load_image_data(use_landmarks, on_hpc)
 
-print(np.shape(data))
+print(np.shape(Xtrain), np.shape(ytrain), np.shape(Xtest), np.shape(ytest))
 #
 #print("Starting NMF")
 #
