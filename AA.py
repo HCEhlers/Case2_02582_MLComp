@@ -62,16 +62,17 @@ def load_image_data(use_landmarks, on_hpc, subset):
 
     if on_hpc:
         filelist = glob.glob('/work3/s200770/data/Faces/*.jpg')
-        filelist = [file[20:] for file in filelist]
+        filelist = sorted(filelist, key=lambda s: int(s[20:].strip(string.ascii_letters + "./")))
     else:
-        filelist = glob.glob('data/Faces/*.jpg')
+        filelist = glob.glob('./data/Faces/*.jpg')
+        filelist = sorted(filelist, key=lambda s: int(s.strip(string.ascii_letters + "./")))
 
     nimg = len(filelist)
     if subset:
         nimg = 200
     train, test = train_test_split([i for i in range(nimg)], test_size=0.20, random_state=3872324)
 
-    for file in sorted(filelist, key=lambda s: int(s.strip(string.ascii_letters + "\\./"))):
+    for file in filelist:
         im = iio.imread(file)
         images.append(im)
 

@@ -12,4 +12,4 @@ source venv_1/bin/activate
 
 # start the collect command with the above settings
 lscpu
-python3 -u nmf.py "$LSB_JOBID" --hpc --landmarks
+python3 -u NMF.py "$LSB_JOBID" --hpc --landmarks
