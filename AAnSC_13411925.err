@@ -1,6 +1,0 @@
-Loaded dependency [python3/3.9.11]: gcc/10.3.0-binutils-2.36.1
-Loaded module: python3/3.9.11
-
-Loading python3/3.9.11
-  Loading requirement: gcc/10.3.0-binutils-2.36.1
-/zhome/7e/c/151330/.lsbatch/1650400470.13411925.shell: line 15: 102210 Killed                  python3 -u AA_and_SC.py "$LSB_JOBID"

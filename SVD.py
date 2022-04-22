@@ -112,7 +112,7 @@ if len(sys.argv) > 1:
         elif arg == '--subset':
             subset = True
         else:
-            jid = int(arg)
+            jid = str(int(arg))
 
 print("Loading images for job ", jid)
 

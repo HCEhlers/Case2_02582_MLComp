@@ -1,15 +1,15 @@
 #!/bin/bash
 #BSUB -M 200G
-#BSUB -J NMF
+#BSUB -J NMF_LM
 #BSUB -q hpc
 #BSUB -W 96:00
 #BSUB -n 1 -R "span[hosts=1]"
-#BSUB -o NMF_%J.out
-#BSUB -e NMF_%J.err
+#BSUB -o NMF_LM_%J.out
+#BSUB -e NMF_LM_%J.err
 
 module load python3/3.9.11
 source venv_1/bin/activate
 
 # start the collect command with the above settings
 lscpu
-python3 -u nmf.py "$LSB_JOBID" --hpc
+python3 -u nmf.py "$LSB_JOBID" --hpc --landmarks

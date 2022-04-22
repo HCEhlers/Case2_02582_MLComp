@@ -1,0 +1,15 @@
+#!/bin/bash
+#BSUB -M 200G
+#BSUB -J SC_RAW
+#BSUB -q man
+#BSUB -W 96:00
+#BSUB -n 1 -R "span[hosts=1]"
+#BSUB -o SC_RAW_%J.out
+#BSUB -e SC_RAW_%J.err
+
+module load python3/3.9.11
+source venv_1/bin/activate
+
+# start the collect command with the above settings
+lscpu
+python3 -u SC.py "$LSB_JOBID" --hpc
