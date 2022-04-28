@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[ ]:
+
+
+#!/usr/bin/env python
+# coding: utf-8
+
 # In[1]:
 
 
@@ -124,7 +130,7 @@ print(np.shape(Xtrain), np.shape(ytrain), np.shape(Xtest), np.shape(ytest))
 # In[3]:
 
 
-n_components = 25 # num components
+n_components = 256 # num components
 
 
 # In[ ]:
@@ -154,6 +160,7 @@ XC, S, C, SSE, varexpl = py_pcha.PCHA(Xtrain.T, noc=n_components, delta=0.1)
 X_hat = Xtrain.T @ C @ S
 L = 0.5*np.linalg.norm(Xtrain.T-X_hat)**2
 
+S_hat,_,_,_ = np.linalg.lstsq(XC, Xtest.T)
 
 # In[45]:
 
@@ -165,6 +172,7 @@ if use_landmarks:
 np.savetxt('AA_output_XC_' + name + '_TRAIN.csv', XC, delimiter=",")
 np.savetxt('AA_output_S_' + name + '_TRAIN.csv', S, delimiter=",")
 np.savetxt('AA_output_C_' + name + '_TRAIN.csv', C, delimiter=",")
+np.savetxt('AA_output_Shat_' + name + '_TRAIN.csv', S_hat, delimiter=",")
 print('Sum of Squared Errors (SSE) for AA, Xtrain:', SSE)
 
 
