@@ -169,9 +169,9 @@ name = jid + '_RAW_'
 if use_landmarks:
     name = jid + '_LANDMARK_'
 
-np.savetxt('AA_output_XC_' + name + '_TRAIN.csv', XC, delimiter=",")
-np.savetxt('AA_output_S_' + name + '_TRAIN.csv', S, delimiter=",")
-np.savetxt('AA_output_C_' + name + '_TRAIN.csv', C, delimiter=",")
+# np.savetxt('AA_output_XC_' + name + '_TRAIN.csv', XC, delimiter=",")
+# np.savetxt('AA_output_S_' + name + '_TRAIN.csv', S, delimiter=",")
+# np.savetxt('AA_output_C_' + name + '_TRAIN.csv', C, delimiter=",")
 np.savetxt('AA_output_Shat_' + name + '_TRAIN.csv', S_hat, delimiter=",")
 print('Sum of Squared Errors (SSE) for AA, Xtrain:', SSE)
 
