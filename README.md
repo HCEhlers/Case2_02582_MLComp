@@ -4,19 +4,4 @@
 
 # Case 2 in course 02582 Computational Data Analysis Spring 2022
 
-**Aim:** Determine whether clustering or decomposition methods are better at
-extracting relevant information such as age/race/gender in a format that a
-simple supervised model can understand.
-
-31/3:
-- Upload data
-- Setup GitHub Repo
-- Setup Messenger
-- 
-7/4:
-
-21/4:
-
-28/4
-
-Handin: 4/5
+**Aim:** Understand how well unsupervised decomposition methods are able to extract important information from images.
