@@ -4,4 +4,8 @@
 
 # Case 2 in course 02582 Computational Data Analysis Spring 2022
 
-**Aim:** Understand how well unsupervised decomposition methods are able to extract important information from images.
+**Aim:** 
+- Training a supervised model on raw image data can take a very long time.
+- Unsupervised decomposition methods are supposed to reduce the dimensionality without throwing away important information.
+- Can we train models faster by using a decomposition first?
+
